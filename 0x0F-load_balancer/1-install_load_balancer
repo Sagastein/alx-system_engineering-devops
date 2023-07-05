@@ -1,29 +1,10 @@
 #!/usr/bin/env bash
-# Configure Nginx so that its HTTP response contains
-# a custom header
-#
-balancer="\
-frontend haproxy_balancer
-    bind *:80
-    mode http
-    default_backend webservers
-    
-backend webservers
-    balance roundrobin
-    server 26071-web-01 44.210.150.159:80 check
-    server 26071-web-02 35.173.47.15:80 check
-"
-# Update packages
-apt-get -y update
-apt-get -y upgrade
+# set up load balancer
+sudo apt-get -y install software-properties-common
+sudo add-apt-repository -y ppa:vbernat/haproxy-1.8
+sudo apt-get -y update
+sudo apt-get -y install haproxy
 
-# Add HAProxy PPA
-apt-get -y install software-properties-common
-add-apt-repository -y ppa:vbernat/haproxy-2.5
-apt-get -y update
-
-# Install HAProxy
-apt-get -y install haproxy
-cp -a /etc/haproxy/haproxy.cfg{,.orig}
-echo "$balancer" >> /etc/haproxy/haproxy.cfg
-service haproxy restart
+sudo sed -i -e '$aENABLED=1\n' /etc/default/haproxy
+sudo sed -i -e '$a\listen http-in\n\tbind :80\n\tbalance roundrobin\n\tserver 40161-web-01 54.166.175.55:80 check\n\tserver 40161-web-02 100.25.192.7:80 check\n' /etc/haproxy/haproxy.cfg
+sudo service haproxy restart
