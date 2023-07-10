@@ -37,7 +37,7 @@ defaults
 frontend sagacpde.tech-http-frontend
 	bind	 *:80
 	http-request set-header X-Forwarded-Proto http
-	default_backend	sagacodex.tech-backend
+	default_backend	sagacode.tech-backend
 
 
 frontend  sagacode.tech-https-frontend
